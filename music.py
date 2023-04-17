@@ -57,6 +57,8 @@ keys_roots = {"A": [10, 22],
               "G": [8, 20],
               "Gm": [8, 20]}
 
+tresillo_rhythm = [2, 2, 1]
+
 
 def provide_chord_notes(chord_prog):
     translated_chords = []
@@ -93,3 +95,5 @@ def notes_durations(genotype):
             melody_itr += 1
 
     return duration
+
+

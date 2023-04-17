@@ -10,8 +10,8 @@ from operator import attrgetter
 class GeneticAlgorithm:
 
     def __init__(self, pop_size=2000, off_size=2000, tourney_size=0.2,
-                 generations=2000, mutation=0.2, rand_note_prob=0.00, duration_prob=20, pitch_prob=80,
-                 crossover_rate=0.8, chord_prog=["C", "G", "Am", "F"]):
+                 generations=100, mutation=0.0, rand_note_prob=0.00, duration_prob=80, pitch_prob=20,
+                 crossover_rate=0.8, chord_prog=["Em", "G", "D", "C"]):
 
         self.pop_size = pop_size
         self.off_size = off_size
@@ -29,8 +29,8 @@ class GeneticAlgorithm:
         init_pop = []
         for i in range(0, self.pop_size):
             init_pop.append(Individual())
-            # init_pop[i].create_initial_melody_chords(self.chord_prog)
-            init_pop[i].create_initial_melody_random_notes()
+            init_pop[i].create_initial_melody_chords(self.chord_prog)
+            # init_pop[i].create_initial_melody_random_notes()
             init_pop[i].evaluate_melody_1(self.chord_prog)
 
         return init_pop
@@ -87,7 +87,10 @@ class GeneticAlgorithm:
                 elif mutation_result[0] == "duration":
                     if i == 0:
                         continue
-                    offspring.melody[i] = 0
+                    if note == 0:
+                        offspring.melody[i] = random.randint(1, 23)
+                    else:
+                        offspring.melody[i] = 0
 
     def pitch_modulation(self, note):
 
@@ -152,10 +155,11 @@ class GeneticAlgorithm:
             population = self.selection(population, children)
             best_fit = population[0].fitness
             average_fit = np.mean([x.fitness for x in population])
-        population[0].play_melody()
-        # phenotype = genotype_translation(population[0].melody)
-        # for i in phenotype:
-        #     print(i[0], end=",")
+        population[0].play_melody(self.chord_prog)
+        phenotype = genotype_translation(population[0].melody)
+        print(phenotype)
+        for i in phenotype:
+            print(i[0], end=",")
 
 
 

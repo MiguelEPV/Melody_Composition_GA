@@ -10,6 +10,7 @@ class Individual:
     def __init__(self):
         self.melody = []
         self.melody_notes = []
+        self.durations = []
         self.fitness = 0
         self.total_notes = 0
         self.scale_notes = []
@@ -27,6 +28,7 @@ class Individual:
         self.scale_notes = keys[chords[0]]
         self.scale_roots = keys_roots[chords[0]]
 
+
     def create_initial_melody_same_note(self):
         self.melody = [1 for x in range(32)]
         print(self.melody)
@@ -40,14 +42,20 @@ class Individual:
         # This function provides the notes present in a melody(ignoring note duration)
         self.melody_notes = [note for note in self.melody if note != 0]
         self.total_notes = len(self.melody_notes)
+        self.durations = notes_durations(self.melody)
 
-    def play_melody(self):
+    def play_melody(self, chord_progression):
         phenotype = genotype_translation(self.melody)
         treble_staff = stream.PartStaff()
         treble_staff.append(meter.TimeSignature('4/4'))
+        chord_staff = stream.PartStaff()
+        chord_staff.append(meter.TimeSignature('4/4'))
         for notes in phenotype:
             treble_staff.append(note.Note(notes[0], quarterLength = notes[1]))
-        result = stream.Score([treble_staff])
+        for this_chord in chord_progression:
+            triad = chords[this_chord]
+            chord_staff.append(chord.Chord(triad, quarterLength=4))
+        result = stream.Score([treble_staff,chord_staff])
         result.show()
 
     def evaluate_melody_1(self, chord_prog, num_objectives=9):
@@ -75,6 +83,21 @@ class Individual:
         self.fitness += 1 / num_objectives * self.objective_7()
         self.fitness += 1 / num_objectives * self.objective_8()
         self.fitness += 1 / num_objectives * self.objective_9()
+
+    def evaluate_melody_3(self, chord_prog, num_objectives=10):
+        chords_notes = provide_chord_notes(chord_prog)
+        self.fitness = 0
+        self.fitness += 0.2 * self.objective_1(chords_notes)
+        self.fitness += (0.2 / 8) * self.objective_2()
+        self.fitness += 0.1 * self.objective_3()
+        self.fitness += (0.2 / 8) * self.objective_4()
+        self.fitness += (0.2 / 8) * self.objective_5()
+        self.fitness += (0.2 / 8) * self.objective_6()
+        self.fitness += 0.1 * self.objective_7()
+        self.fitness += (0.2 / 8) * self.objective_8()
+        self.fitness += (0.2 / 8) * self.objective_9()
+        self.fitness += 0.3 * self.objective_10(tresillo_rhythm)
+        self.fitness += 0.1 * self.objective_11()
 
     def objective_1(self, chord_prog):
         # Objective 1: Checks the percentage of notes corresponding to chord notes
@@ -146,8 +169,12 @@ class Individual:
                 if abs(note - next_note) == 12 or abs(note - next_note) == 14:
                     four_steps += 1
 
+
         obj2_value = one_step + two_steps + (same_note * 0.9) + (three_steps * 0.8) + (four_steps * 0.7)
-        obj2_value /= self.total_notes-1
+        if self.total_notes == 1:
+            obj2_value = 0
+        else:
+            obj2_value /= self.total_notes-1
 
         # print("O2: ", obj2_value)
         return obj2_value
@@ -231,6 +258,9 @@ class Individual:
             if abs(note - next_note) > 7:
                 over_fifth += 1
         # print("O6: ", -over_fifth/(len(self.melody_notes)-1))
+        if self.total_notes == 1:
+            return 0
+
         return -over_fifth/(len(self.melody_notes)-1)
 
     def objective_7(self):
@@ -244,6 +274,8 @@ class Individual:
             if abs(note - next_note) > 1:
                 duration_change += 1
         # print("O7: ", -duration_change / (len(self.melody_notes) - 1))
+        if self.total_notes == 1:
+            return 0
         return -duration_change / (len(self.melody_notes) - 1)
 
     def objective_8(self):
@@ -267,10 +299,42 @@ class Individual:
 
         return 0
 
+    def objective_10(self, pattern):
+        num_notes = len(pattern)
+        shortest_note = pattern.index(min(pattern))
+        iterator_max = len(self.durations) - (num_notes-1)
+        satisfies_pattern = 0
+        for i in range(0, iterator_max):
+            base_duration = self.durations[i+shortest_note]
+            j = i
+            pattern_idx = 0
+            follows_pattern = 1
+            while j < (i + num_notes - 1):
+                # print(pattern_idx)
+                current_duration = self.durations[j]
+                pattern_beat = pattern[pattern_idx]
+                if current_duration != base_duration * pattern_beat:
+                    follows_pattern = 0
+                    break
+                j += 1
+                pattern_idx += 1
 
-mike = Individual()
-mike.create_initial_melody_chords(["C","Gm","Am","F"])
-print(mike.melody)
+            if follows_pattern:
+                satisfies_pattern += num_notes
+                i += num_notes
+
+        return satisfies_pattern / len(self.melody_notes)
+
+    def objective_11(self):
+        if max(self.durations) > 1:
+            return -1
+        return 0
+
+
+
+# mike = Individual()
+# mike.create_initial_melody_chords(["C","Gm","Am","F"])
+# print(mike.melody)
 # print(genotype_translation(mike.melody))
 # mike.evaluate_melody(["C","Gm","Am","F"])
 # print(mike.fitness)
