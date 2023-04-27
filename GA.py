@@ -9,9 +9,9 @@ from operator import attrgetter
 
 class GeneticAlgorithm:
 
-    def __init__(self, pop_size=2000, off_size=2000, tourney_size=0.2,
-                 generations=100, mutation=0.0, rand_note_prob=0.00, duration_prob=80, pitch_prob=20,
-                 crossover_rate=0.8, chord_prog=["Em", "G", "D", "C"]):
+    def __init__(self, pop_size=500, off_size=500, tourney_size=0.2,
+                 generations=500, mutation=0.1, rand_note_prob=0.00, duration_prob=50, pitch_prob=50,
+                 crossover_rate=0.9, chord_prog=["C", "A", "G", "F"]):
 
         self.pop_size = pop_size
         self.off_size = off_size
@@ -29,9 +29,9 @@ class GeneticAlgorithm:
         init_pop = []
         for i in range(0, self.pop_size):
             init_pop.append(Individual())
-            init_pop[i].create_initial_melody_chords(self.chord_prog)
-            # init_pop[i].create_initial_melody_random_notes()
-            init_pop[i].evaluate_melody_1(self.chord_prog)
+            # init_pop[i].create_initial_melody_chords(self.chord_prog)
+            init_pop[i].create_initial_melody_random_notes()
+            init_pop[i].evaluate_melody_2(self.chord_prog)
 
         return init_pop
 
@@ -64,15 +64,15 @@ class GeneticAlgorithm:
                 if choose_cross == 0:
                     self.two_point_crossover(offspring[i], offspring[i + 1])
                 else:
-                    self.measure_crossover(offspring[i], offspring[i+1])
+                    self.measure_crossover(offspring[i], offspring[i + 1])
 
             # self.uniform_crossover(offspring[i], offspring[i+1])
             self.mutate(offspring[i])
             self.mutate(offspring[i + 1])
             offspring[i].get_melody_notes()
             offspring[i + 1].get_melody_notes()
-            offspring[i].evaluate_melody_1(self.chord_prog)
-            offspring[i + 1].evaluate_melody_1(self.chord_prog)
+            offspring[i].evaluate_melody_2(self.chord_prog)
+            offspring[i + 1].evaluate_melody_2(self.chord_prog)
         return offspring
 
     def mutate(self, offspring):
@@ -141,10 +141,21 @@ class GeneticAlgorithm:
         return intermediate_pop[0:self.pop_size]
 
     def run_genetic_algorithm(self):
+        stats = {"best_fitness": 0,
+                 "mean_fitness": 0,
+                 "std_dev": 0,
+                 "best_fitness_it": [],
+                 "mean_fitness_it": []
+
+                 }
         population = self.initialize_population()
         best_fit_indiv = max(population, key=attrgetter('fitness'))
         best_fit = best_fit_indiv.fitness
         average_fit = np.mean([x.fitness for x in population])
+        stats["best_fitness"] = best_fit
+        stats["mean_fitness"] = average_fit
+        stats["best_fitness_it"].append(best_fit)
+        stats["mean_fitness_it"].append(average_fit)
         for i in range(0, self.generations):
             print("Generation: ", i)
             print("Best Fitness = ", best_fit)
@@ -155,16 +166,33 @@ class GeneticAlgorithm:
             population = self.selection(population, children)
             best_fit = population[0].fitness
             average_fit = np.mean([x.fitness for x in population])
+            stats["best_fitness"] = best_fit
+            stats["mean_fitness"] = average_fit
+            stats["best_fitness_it"].append(best_fit)
+            stats["mean_fitness_it"].append(average_fit)
         population[0].play_melody(self.chord_prog)
         phenotype = genotype_translation(population[0].melody)
-        print(phenotype)
-        for i in phenotype:
-            print(i[0], end=",")
+        # print(phenotype)
+        # for i in phenotype:
+        #     print(i[0], end=",")
+        best_indiv = population[0]
+        print("Best Individual Objective Values")
+        print("O1: ", best_indiv.o1)
+        print("O2: ", best_indiv.o2)
+        print("O3: ", best_indiv.o3)
+        print("O4: ", best_indiv.o4)
+        print("O5: ", best_indiv.o5)
+        print("O6: ", best_indiv.o6)
+        print("O7: ", best_indiv.o7)
+        print("O8: ", best_indiv.o8)
+        print("O9: ", best_indiv.o9)
+        print("O10: ", best_indiv.o10)
+        print("O11: ", best_indiv.o11)
+        return stats
 
 
-
-ga1 = GeneticAlgorithm()
-ga1.run_genetic_algorithm()
+# ga1 = GeneticAlgorithm()
+# ga1.run_genetic_algorithm()
 # for i in range(0,len(parent)):
 #     print("Parent")
 #     print(parent[i].melody)
@@ -172,3 +200,6 @@ ga1.run_genetic_algorithm()
 #     print("Child")
 #     print(child[i].melody)
 #     print(child[i].fitness)
+
+0.8157603686635945
+0.8157603686635947
