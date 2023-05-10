@@ -95,11 +95,11 @@ class Individual:
         chords_notes = provide_chord_notes(chord_prog)
         self.fitness = 0
         self.fitness += 0.5 * self.objective_1(chords_notes)
-        self.fitness += (0.5/3) * self.objective_3()
+        self.fitness += (0.5 / 3) * self.objective_3()
         self.fitness += self.objective_6()
         self.fitness += self.objective_7()
-        self.fitness += (0.5/3) * self.objective_8()
-        self.fitness += (0.5/3) * self.objective_9()
+        self.fitness += (0.5 / 3) * self.objective_8()
+        self.fitness += (0.5 / 3) * self.objective_9()
         self.fitness += self.objective_11()
 
     def evaluate_melody_3(self, chord_prog, num_objectives=11):
@@ -207,36 +207,51 @@ class Individual:
         rising = 0
         stable = 0
         i = 0
+        prev_pattern = 0  # This variable checks if the previous note belonged to a pattern
         while i < len(self.melody_notes) - 2:
             note1 = self.melody_notes[i]
             note2 = self.melody_notes[i + 1]
             note3 = self.melody_notes[i + 2]
 
             if (note1 > note2) and (note2 > note3):
-                falling += 3
+                if prev_pattern == 0:
+                    falling += 3
+                else:
+                    falling += 2
+                prev_pattern = 1
                 i += 2
                 continue
 
             if (note1 < note2) and (note2 < note3):
-                rising += 3
+                if prev_pattern == 0:
+                    rising += 3
+                else:
+                    rising += 2
+                prev_pattern = 1
                 i += 2
                 continue
 
             if (note1 == note2) and (note2 == note3):
-                stable += 3
+                if prev_pattern == 0:
+                    stable += 3
+                else:
+                    stable += 2
+                prev_pattern = 1
                 i += 2
                 continue
 
+            prev_pattern = 0
             i += 1
 
-        obj3_value = falling + rising + (0.5 * stable)
+        obj3_value = falling + rising + (0.8 * stable)
         obj3_value /= self.total_notes
+        self.o3 = obj3_value
 
         # print("O3: ", obj3_value)
-        if obj3_value >= 1:
-            self.o3 = 1
-            return 1
-        self.o3 = obj3_value
+        # if obj3_value >= 1:
+        #     self.o3 = 1
+        #     return 1
+        # self.o3 = obj3_value
         return obj3_value
 
     def objective_4(self):

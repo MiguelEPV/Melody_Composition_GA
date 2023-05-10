@@ -9,9 +9,9 @@ from operator import attrgetter
 
 class GeneticAlgorithm:
 
-    def __init__(self, pop_size=500, off_size=500, tourney_size=0.2,
-                 generations=500, mutation=0.1, rand_note_prob=0.00, duration_prob=50, pitch_prob=50,
-                 crossover_rate=0.9, chord_prog=["C", "A", "G", "F"]):
+    def __init__(self, pop_size=200, off_size=200, tourney_size=0.2,
+                 generations=400, mutation=0.05, duration_prob=80, pitch_prob=20,
+                 crossover_rate=1, chord_prog=["C", "G", "Am", "F"]):
 
         self.pop_size = pop_size
         self.off_size = off_size
@@ -20,7 +20,6 @@ class GeneticAlgorithm:
         self.crossover_rate = crossover_rate
         self.chord_prog = chord_prog
         self.indv_size = len(chord_prog) * 8
-        self.random_note_prob = rand_note_prob
         self.duration_prob = duration_prob
         self.pitch_prob = pitch_prob
         self.mutation = mutation
@@ -170,8 +169,8 @@ class GeneticAlgorithm:
             stats["mean_fitness"] = average_fit
             stats["best_fitness_it"].append(best_fit)
             stats["mean_fitness_it"].append(average_fit)
-        population[0].play_melody(self.chord_prog)
-        phenotype = genotype_translation(population[0].melody)
+        # population[0].play_melody(self.chord_prog)
+        # phenotype = genotype_translation(population[0].melody)
         # print(phenotype)
         # for i in phenotype:
         #     print(i[0], end=",")
