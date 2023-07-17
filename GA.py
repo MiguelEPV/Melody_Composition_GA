@@ -197,9 +197,9 @@ class GeneticAlgorithm:
         return stats
 
 
-ga1 = GeneticAlgorithm()
-results = ga1.run_genetic_algorithm()
-print(results["evaluations"])
+# ga1 = GeneticAlgorithm()
+# results = ga1.run_genetic_algorithm()
+# print(results["evaluations"])
 
 
 # for i in range(0,len(parent)):

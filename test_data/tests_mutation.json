@@ -1,19 +1,19 @@
 { "mut-higher" : {
-  "population": 500,
+  "population": 250,
   "offspring": 250,
   "generations": 100,
   "mutation":  0.05,
   "crossover": 1},
 
   "mut-vhigh" : {
-  "population": 500,
+  "population": 250,
   "offspring": 250,
   "generations": 100,
   "mutation":  0.1,
   "crossover": 1},
 
   "mut-low" : {
-  "population": 500,
+  "population": 250,
   "offspring": 250,
   "generations": 100,
   "mutation":  0.001,

@@ -1,12 +1,12 @@
 { "cross-less" : {
-  "population": 500,
+  "population": 250,
   "offspring": 250,
   "generations": 500,
   "mutation":  0.01,
   "crossover": 0.8},
 
   "cross-fifty" : {
-  "population": 500,
+  "population": 250,
   "offspring": 250,
   "generations": 500,
   "mutation":  0.01,
