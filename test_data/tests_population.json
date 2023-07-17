@@ -1,0 +1,21 @@
+{ "pop-50" : {
+  "population": 50,
+  "offspring": 50,
+  "generations": 100,
+  "mutation":  0.01,
+  "crossover": 1},
+
+  "pop-250" : {
+  "population": 250,
+  "offspring": 50,
+  "generations": 100,
+  "mutation":  0.01,
+  "crossover": 1},
+
+  "pop-500" : {
+  "population": 500,
+  "offspring": 50,
+  "generations": 100,
+  "mutation":  0.01,
+  "crossover": 1}
+}
