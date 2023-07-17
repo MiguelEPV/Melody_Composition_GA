@@ -54,14 +54,14 @@ class Individual:
         self.total_notes = len(self.melody_notes)
         self.durations = notes_durations(self.melody)
 
-    def play_melody(self, chord_progression):
+    def save_melody(self, chord_progression, filename):
         phenotype = genotype_translation(self.melody)
         treble_staff = stream.PartStaff()
         treble_staff.append(meter.TimeSignature('4/4'))
         chord_staff = stream.PartStaff()
         chord_staff.append(meter.TimeSignature('4/4'))
 
-        with open('./melodies/example.txt', 'w') as f:
+        with open('./melodies/'+filename+'.txt', 'w') as f:
             f.write("Time Signature: 4/4")
             f.write('\n')
             f.write("Key: " + chord_progression[0])
@@ -75,8 +75,9 @@ class Individual:
                 triad = chords[this_chord]
                 chord_staff.append(chord.Chord(triad, quarterLength=4))
         result = stream.Score([treble_staff, chord_staff])
-        result.write("musicxml", fp="C:/Users/34683/Desktop/TFG/Melody_Composition_GA/melodies/example")
-        result.show()
+        result.write("musicxml", fp="C:/Users/34683/Desktop/TFG/Melody_Composition_GA/melodies/"+filename)
+        result.write("midi", fp="C:/Users/34683/Desktop/TFG/Melody_Composition_GA/melodies/" + filename+".midi")
+        # result.show()
 
     def evaluate_melody_1(self, chord_prog, num_objectives=9):
         chords_notes = provide_chord_notes(chord_prog)

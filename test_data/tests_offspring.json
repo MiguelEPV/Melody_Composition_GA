@@ -1,0 +1,21 @@
+{ "off-250" : {
+  "population": 500,
+  "offspring": 250,
+  "generations": 100,
+  "mutation":  0.01,
+  "crossover": 1},
+
+  "off-500" : {
+  "population": 500,
+  "offspring": 500,
+  "generations": 100,
+  "mutation":  0.01,
+  "crossover": 1},
+
+  "off-750" : {
+  "population": 500,
+  "offspring": 750,
+  "generations": 100,
+  "mutation":  0.01,
+  "crossover": 1}
+}

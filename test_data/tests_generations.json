@@ -1,0 +1,21 @@
+{ "gen-250" : {
+  "population": 500,
+  "offspring": 250,
+  "generations": 250,
+  "mutation":  0.01,
+  "crossover": 1},
+
+  "gen-500" : {
+  "population": 500,
+  "offspring": 250,
+  "generations": 500,
+  "mutation":  0.01,
+  "crossover": 1},
+
+  "gen-700" : {
+  "population": 500,
+  "offspring": 250,
+  "generations": 750,
+  "mutation":  0.01,
+  "crossover": 1}
+}

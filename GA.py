@@ -9,13 +9,13 @@ from operator import attrgetter
 
 class GeneticAlgorithm:
 
-    def __init__(self, pop_size=200, off_size=200, tourney_size=0.2,
-                 generations=400, mutation=0.05, duration_prob=80, pitch_prob=20,
-                 crossover_rate=1, chord_prog=["C", "G", "Am", "F"]):
+    def __init__(self, pop_size=500, off_size=250,
+                 generations=500, mutation=0.01, crossover_rate=1, duration_prob=80, pitch_prob=20,
+                 chord_prog=["C", "G", "Am", "F"], filename="examples/example1"):
 
         self.pop_size = pop_size
         self.off_size = off_size
-        self.tourney_size = int(pop_size * tourney_size)
+        self.tourney_size = 2
         self.generations = generations
         self.crossover_rate = crossover_rate
         self.chord_prog = chord_prog
@@ -23,12 +23,12 @@ class GeneticAlgorithm:
         self.duration_prob = duration_prob
         self.pitch_prob = pitch_prob
         self.mutation = mutation
+        self.filename = filename
 
     def initialize_population(self):
         init_pop = []
         for i in range(0, self.pop_size):
             init_pop.append(Individual())
-            # init_pop[i].create_initial_melody_chords(self.chord_prog)
             init_pop[i].create_initial_melody_random_notes()
             init_pop[i].evaluate_melody_2(self.chord_prog)
 
@@ -51,7 +51,7 @@ class GeneticAlgorithm:
         return parents
 
     def random_parents(self, population):
-        parents = random.choices(population, k=self.pop_size)
+        parents = random.choices(population, k=self.off_size)
         return parents
 
     def crossover(self, parents):
@@ -144,7 +144,8 @@ class GeneticAlgorithm:
                  "mean_fitness": 0,
                  "std_dev": 0,
                  "best_fitness_it": [],
-                 "mean_fitness_it": []
+                 "mean_fitness_it": [],
+                 "evaluations": 0
 
                  }
         population = self.initialize_population()
@@ -155,13 +156,14 @@ class GeneticAlgorithm:
         stats["mean_fitness"] = average_fit
         stats["best_fitness_it"].append(best_fit)
         stats["mean_fitness_it"].append(average_fit)
+        stats["evaluations"] = self.pop_size
         for i in range(0, self.generations):
             print("Generation: ", i)
             print("Best Fitness = ", best_fit)
             print("Average Fitness = ", average_fit)
-            # parents = self.parent_tournament(population)
-            parents = self.random_parents(population)
+            parents = self.parent_tournament(population)
             children = self.crossover(parents)
+            stats["evaluations"] += self.off_size
             population = self.selection(population, children)
             best_fit = population[0].fitness
             average_fit = np.mean([x.fitness for x in population])
@@ -169,29 +171,37 @@ class GeneticAlgorithm:
             stats["mean_fitness"] = average_fit
             stats["best_fitness_it"].append(best_fit)
             stats["mean_fitness_it"].append(average_fit)
+            rounded_best = round(best_fit,6)
+            rounded_avg = round(average_fit, 6)
+            # if best_fit == 0.99999 or rounded_best == rounded_avg:
+            #     break
         # population[0].play_melody(self.chord_prog)
         # phenotype = genotype_translation(population[0].melody)
         # print(phenotype)
         # for i in phenotype:
         #     print(i[0], end=",")
         best_indiv = population[0]
-        print("Best Individual Objective Values")
-        print("O1: ", best_indiv.o1)
-        print("O2: ", best_indiv.o2)
-        print("O3: ", best_indiv.o3)
-        print("O4: ", best_indiv.o4)
-        print("O5: ", best_indiv.o5)
-        print("O6: ", best_indiv.o6)
-        print("O7: ", best_indiv.o7)
-        print("O8: ", best_indiv.o8)
-        print("O9: ", best_indiv.o9)
-        print("O10: ", best_indiv.o10)
-        print("O11: ", best_indiv.o11)
+        best_indiv.save_melody(self.chord_prog, self.filename)
+        # print("Best Individual Objective Values")
+        # print("O1: ", best_indiv.o1)
+        # print("O2: ", best_indiv.o2)
+        # print("O3: ", best_indiv.o3)
+        # print("O4: ", best_indiv.o4)
+        # print("O5: ", best_indiv.o5)
+        # print("O6: ", best_indiv.o6)
+        # print("O7: ", best_indiv.o7)
+        # print("O8: ", best_indiv.o8)
+        # print("O9: ", best_indiv.o9)
+        # print("O10: ", best_indiv.o10)
+        # print("O11: ", best_indiv.o11)
         return stats
 
 
-# ga1 = GeneticAlgorithm()
-# ga1.run_genetic_algorithm()
+ga1 = GeneticAlgorithm()
+results = ga1.run_genetic_algorithm()
+print(results["evaluations"])
+
+
 # for i in range(0,len(parent)):
 #     print("Parent")
 #     print(parent[i].melody)
@@ -200,5 +210,5 @@ class GeneticAlgorithm:
 #     print(child[i].melody)
 #     print(child[i].fitness)
 
-0.8157603686635945
-0.8157603686635947
+# 0.8157603686635945
+# 0.8157603686635947

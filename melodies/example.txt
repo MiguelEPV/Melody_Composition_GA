@@ -1,3 +1,0 @@
-Time Signature: 4/4
-Key: C
-Melody: G4 quarterLength = 0.5,E4 quarterLength = 1.0,C4 quarterLength = 1.0,G4 quarterLength = 0.5,C5 quarterLength = 0.5,E5 quarterLength = 0.5,E5 quarterLength = 0.5,A4 quarterLength = 0.5,E4 quarterLength = 1.0,A4 quarterLength = 0.5,C#5 quarterLength = 0.5,E5 quarterLength = 0.5,C#5 quarterLength = 0.5,B4 quarterLength = 1.0,D5 quarterLength = 0.5,B4 quarterLength = 1.0,G4 quarterLength = 0.5,D5 quarterLength = 0.5,G4 quarterLength = 0.5,F4 quarterLength = 1.0,A4 quarterLength = 0.5,C5 quarterLength = 1.0,A4 quarterLength = 0.5,F4 quarterLength = 0.5,C5 quarterLength = 0.5,
