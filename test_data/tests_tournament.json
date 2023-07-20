@@ -1,0 +1,24 @@
+{ "tourney_1" : {
+  "population": 250,
+  "offspring": 250,
+  "generations": 500,
+  "mutation":  0.01,
+  "crossover": 1,
+  "tournament":  1},
+
+  "tourney_5" : {
+  "population": 250,
+  "offspring": 250,
+  "generations": 500,
+  "mutation":  0.01,
+  "crossover": 1,
+  "tournament": 5},
+
+  "tourney_10" : {
+  "population": 250,
+  "offspring": 250,
+  "generations": 500,
+  "mutation":  0.01,
+  "crossover": 1,
+  "tournament":  10}
+}

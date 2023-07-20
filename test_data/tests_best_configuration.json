@@ -1,0 +1,10 @@
+{
+  "best_config": {
+    "population": 250,
+    "offspring": 250,
+    "generations": 500,
+    "mutation": 0.01,
+    "crossover": 1,
+    "tournament": 2
+  }
+}

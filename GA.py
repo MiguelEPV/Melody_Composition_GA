@@ -9,13 +9,13 @@ from operator import attrgetter
 
 class GeneticAlgorithm:
 
-    def __init__(self, pop_size=500, off_size=250,
-                 generations=500, mutation=0.01, crossover_rate=1, duration_prob=80, pitch_prob=20,
+    def __init__(self, pop_size=250, off_size=250,
+                 generations=500, mutation=0.01, crossover_rate=1, tourney_size=2, duration_prob=80, pitch_prob=20,
                  chord_prog=["C", "G", "Am", "F"], filename="examples/example1"):
 
         self.pop_size = pop_size
         self.off_size = off_size
-        self.tourney_size = 2
+        self.tourney_size = tourney_size
         self.generations = generations
         self.crossover_rate = crossover_rate
         self.chord_prog = chord_prog
@@ -145,6 +145,7 @@ class GeneticAlgorithm:
                  "std_dev": 0,
                  "best_fitness_it": [],
                  "mean_fitness_it": [],
+                 "generations": 0,
                  "evaluations": 0
 
                  }
@@ -173,8 +174,9 @@ class GeneticAlgorithm:
             stats["mean_fitness_it"].append(average_fit)
             rounded_best = round(best_fit,6)
             rounded_avg = round(average_fit, 6)
-            # if best_fit == 0.99999 or rounded_best == rounded_avg:
-            #     break
+            stats["generations"] = i
+            if best_fit == 0.99999 or rounded_best == rounded_avg:
+                break
         # population[0].play_melody(self.chord_prog)
         # phenotype = genotype_translation(population[0].melody)
         # print(phenotype)
@@ -182,6 +184,7 @@ class GeneticAlgorithm:
         #     print(i[0], end=",")
         best_indiv = population[0]
         best_indiv.save_melody(self.chord_prog, self.filename)
+        # best_indiv.play_melody(self.chord_prog)
         # print("Best Individual Objective Values")
         # print("O1: ", best_indiv.o1)
         # print("O2: ", best_indiv.o2)
@@ -197,9 +200,11 @@ class GeneticAlgorithm:
         return stats
 
 
-# ga1 = GeneticAlgorithm()
-# results = ga1.run_genetic_algorithm()
-# print(results["evaluations"])
+# for i in range(1):
+#     ga1 = GeneticAlgorithm(filename="examples/example" + str(i))
+#     results = ga1.run_genetic_algorithm()
+
+
 
 
 # for i in range(0,len(parent)):

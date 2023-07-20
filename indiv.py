@@ -79,6 +79,20 @@ class Individual:
         result.write("midi", fp="C:/Users/34683/Desktop/TFG/Melody_Composition_GA/melodies/" + filename+".midi")
         # result.show()
 
+    def play_melody(self, chord_progression):
+        phenotype = genotype_translation(self.melody)
+        treble_staff = stream.PartStaff()
+        treble_staff.append(meter.TimeSignature('4/4'))
+        chord_staff = stream.PartStaff()
+        chord_staff.append(meter.TimeSignature('4/4'))
+        for notes in phenotype:
+            treble_staff.append(note.Note(notes[0], quarterLength=notes[1]))
+        for this_chord in chord_progression:
+            triad = chords[this_chord]
+            chord_staff.append(chord.Chord(triad, quarterLength=4))
+        result = stream.Score([treble_staff, chord_staff])
+        result.show()
+
     def evaluate_melody_1(self, chord_prog, num_objectives=9):
         chords_notes = provide_chord_notes(chord_prog)
         self.fitness = 0
