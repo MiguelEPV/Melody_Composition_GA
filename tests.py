@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from GA import GeneticAlgorithm
 
-RES_FILEPATH = "./test_results/best_config.csv"
+RES_FILEPATH = "./test_results/500.csv"
 
 average_pop_fitness = []
 best_fitness = []
@@ -21,10 +21,10 @@ for key, value in test_values.items():
     evaluations = 0
     generations = 0
     ga_test = GeneticAlgorithm(value["population"], value["offspring"], value["generations"],
-                               value["mutation"], value["crossover"], value["tournament"],
-                               filename="best_configuration/" + key)
+                               value["mutation"], value["crossover"],
+                               filename="500/" + key)
 
-    for _ in range(10):
+    for _ in range(100):
         st = time.time()
         stats = ga_test.run_genetic_algorithm()
         et = time.time()
@@ -34,7 +34,7 @@ for key, value in test_values.items():
         average_pop_fitness.append(stats["mean_fitness"])
         best_fitness.append(stats["best_fitness"])
         execution_time.append(total_time)
-        res_best = [value["population"], value["offspring"], generations,
+        res_best = [value["population"], value["offspring"], stats["best_gen"],
                     value["mutation"], value["crossover"], value["tournament"],
                     stats["mean_fitness"], stats["best_fitness"], total_time, evaluations]
 
@@ -42,17 +42,17 @@ for key, value in test_values.items():
             writer = csv.writer(f)
             writer.writerow(res_best)
 
-    avg_fitness = np.mean(average_pop_fitness)
-    std_af = np.std(average_pop_fitness)
-    avg_best_fitness = np.mean(best_fitness)
-    std_bf = np.std(best_fitness)
-    avg_time = np.mean(execution_time)
-    std_time = np.std(execution_time)
-
-    res = [value["population"], value["offspring"], value["generations"],
-           value["mutation"], value["crossover"], value["tournament"],
-           avg_fitness, std_af, avg_best_fitness, std_bf, avg_time, std_time, evaluations]
-
+    # avg_fitness = np.mean(average_pop_fitness)
+    # std_af = np.std(average_pop_fitness)
+    # avg_best_fitness = np.mean(best_fitness)
+    # std_bf = np.std(best_fitness)
+    # avg_time = np.mean(execution_time)
+    # std_time = np.std(execution_time)
+    #
+    # res = [value["population"], value["offspring"], value["generations"],
+    #        value["mutation"], value["crossover"],
+    #        avg_fitness, std_af, avg_best_fitness, std_bf, avg_time, std_time, evaluations]
+    #
     # with open(RES_FILEPATH, 'a', newline="") as f:
     #
     #     writer = csv.writer(f)

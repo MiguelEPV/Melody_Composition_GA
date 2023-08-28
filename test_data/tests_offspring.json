@@ -1,6 +1,6 @@
 { "off-150" : {
   "population": 250,
-  "offspring": 250,
+  "offspring": 150,
   "generations": 100,
   "mutation":  0.01,
   "crossover": 1},

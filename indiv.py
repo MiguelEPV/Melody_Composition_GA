@@ -1,6 +1,5 @@
-import time
 import random
-import concurrent.futures
+import math
 from music21 import *
 from music import *
 
@@ -45,7 +44,7 @@ class Individual:
         self.get_melody_notes()
 
     def create_initial_melody_random_notes(self):
-        self.melody = [random.randrange(1, 23, 1) for i in range(32)]
+        self.melody = [random.randrange(1, 24, 1) for _ in range(32)]
         self.get_melody_notes()
 
     def get_melody_notes(self):
@@ -93,18 +92,18 @@ class Individual:
         result = stream.Score([treble_staff, chord_staff])
         result.show()
 
-    def evaluate_melody_1(self, chord_prog, num_objectives=9):
-        chords_notes = provide_chord_notes(chord_prog)
-        self.fitness = 0
-        self.fitness += 0.5 * self.objective_1(chords_notes)
-        self.fitness += (0.3 / 4) * self.objective_2()
-        self.fitness += 0.1 * self.objective_3()
-        self.fitness += (0.3 / 4) * self.objective_4()
-        self.fitness += (0.3 / 4) * self.objective_5()
-        self.fitness += self.objective_6()
-        self.fitness += self.objective_7()
-        self.fitness += (0.3 / 4) * self.objective_8()
-        self.fitness += 0.1 * self.objective_9()
+    # def evaluate_melody_1(self, chord_prog):
+    #     chords_notes = provide_chord_notes(chord_prog)
+    #     self.fitness = 0
+    #     self.fitness += 0.5 * self.objective_1(chords_notes)
+    #     self.fitness += (0.3 / 4) * self.objective_2()
+    #     self.fitness += 0.1 * self.objective_3()
+    #     self.fitness += (0.3 / 4) * self.objective_4()
+    #     self.fitness += (0.3 / 4) * self.objective_5()
+    #     self.fitness += self.objective_6()
+    #     self.fitness += self.objective_7()
+    #     self.fitness += (0.3 / 4) * self.objective_8()
+    #     self.fitness += 0.1 * self.objective_9()
 
     def evaluate_melody_2(self, chord_prog, num_objectives=5):
         chords_notes = provide_chord_notes(chord_prog)
@@ -115,22 +114,6 @@ class Individual:
         self.fitness += self.objective_7()
         self.fitness += (0.5 / 3) * self.objective_8()
         self.fitness += (0.5 / 3) * self.objective_9()
-        self.fitness += self.objective_11()
-
-    def evaluate_melody_3(self, chord_prog, num_objectives=11):
-        chords_notes = provide_chord_notes(chord_prog)
-        self.fitness = 0
-        self.fitness += 0.2 * self.objective_1(chords_notes)
-        self.fitness += (0.2 / 8) * self.objective_2()
-        self.fitness += 0.1 * self.objective_3()
-        self.fitness += (0.2 / 8) * self.objective_4()
-        self.fitness += (0.2 / 8) * self.objective_5()
-        self.fitness += (0.2 / 8) * self.objective_6()
-        self.fitness += 0.1 * self.objective_7()
-        self.fitness += (0.2 / 8) * self.objective_8()
-        self.fitness += (0.2 / 8) * self.objective_9()
-        self.fitness += 0.3 * self.objective_10(tresillo_rhythm)
-        self.fitness += 0.1 * self.objective_11()
 
     def objective_1(self, chord_prog):
         # Objective 1: Checks the percentage of notes corresponding to chord notes
@@ -288,7 +271,7 @@ class Individual:
         return 0
 
     def objective_6(self):
-        # Objective 6: Checks if two consecutive notes are more than five scale-steps away (fitness punishment)
+        # Objective 6: Checks if two consecutive notes are more than 7 semitones away (fitness punishment)
         over_fifth = 0
 
         for i in range(0, len(self.melody_notes) - 1):
@@ -323,7 +306,7 @@ class Individual:
         return -duration_change / (len(self.melody_notes) - 1)
 
     def objective_8(self):
-        # Objective 8: Checks if the pitch range surpasses an octave (punishent)
+        # Objective 8: Checks if the pitch range surpasses two and a half octaves
         lowest_pitch = min(self.melody_notes)
         highest_pitch = max(self.melody_notes)
 
@@ -382,22 +365,13 @@ class Individual:
         self.o11 = 0
         return 0
 
-# mike = Individual()
-# mike.create_initial_melody_chords(["C","Gm","Am","F"])
-# print(mike.melody)
-# print(genotype_translation(mike.melody))
-# mike.evaluate_melody(["C","Gm","Am","F"])
-# print(mike.fitness)
-# print(mike.scale_notes)
-# a = Individual()
-# a.create_initial_melody_chords(["C","Gm","Am","F"])
-# print(a.melody)
-# print(genotype_translation(a.melody))
-# a.evaluate_melody(["C","Gm","Am","F"])
-# print(a.fitness)
-# b = Individual()
-# b.create_initial_melody_chords(["C","Gm","Am","F"])
-# print(b.melody)
-# print(genotype_translation(b.melody))
-# b.evaluate_melody(["C","Gm","Am","F"])
-# print(b.fitness)
+
+# m = Individual()
+# m.melody = [16, 14, 16, 5, 19, 15, 20, 5, 4, 11, 5, 4, 10, 11, 14, 12, 11, 11, 12, 20, 16, 20, 15, 7, 20, 4, 6, 20, 15, 10, 22, 14]
+# m.get_melody_notes()
+# m.evaluate_melody_2(["C","G","Am","F"])
+# print(m.fitness)
+# print(f'{m.o1} , {m.o3} , {m.o6} , {m.o7} , {m.o8} , {m.o9}')
+
+
+

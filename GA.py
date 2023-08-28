@@ -1,16 +1,16 @@
 import random
+import math
 import copy
+import csv
 import numpy as np
 from indiv import Individual
-from music21 import *
-from music import *
 from operator import attrgetter
 
 
 class GeneticAlgorithm:
 
     def __init__(self, pop_size=250, off_size=250,
-                 generations=500, mutation=0.01, crossover_rate=1, tourney_size=2, duration_prob=80, pitch_prob=20,
+                 generations=500, mutation=0.01, crossover_rate=1, tourney_size=2, duration_prob=40, pitch_prob=60,
                  chord_prog=["C", "G", "Am", "F"], filename="examples/example1"):
 
         self.pop_size = pop_size
@@ -87,7 +87,7 @@ class GeneticAlgorithm:
                     if i == 0:
                         continue
                     if note == 0:
-                        offspring.melody[i] = random.randint(1, 23)
+                        offspring.melody[i] = random.randint(1, 24)
                     else:
                         offspring.melody[i] = 0
 
@@ -142,78 +142,74 @@ class GeneticAlgorithm:
     def run_genetic_algorithm(self):
         stats = {"best_fitness": 0,
                  "mean_fitness": 0,
+                 "best_gen": 0,
                  "std_dev": 0,
                  "best_fitness_it": [],
                  "mean_fitness_it": [],
                  "generations": 0,
                  "evaluations": 0
-
                  }
+
         population = self.initialize_population()
         best_fit_indiv = max(population, key=attrgetter('fitness'))
         best_fit = best_fit_indiv.fitness
+        overall_best = best_fit
         average_fit = np.mean([x.fitness for x in population])
+        stdv_mean = np.std([x.fitness for x in population])
         stats["best_fitness"] = best_fit
         stats["mean_fitness"] = average_fit
         stats["best_fitness_it"].append(best_fit)
         stats["mean_fitness_it"].append(average_fit)
         stats["evaluations"] = self.pop_size
+        print("Initial Generation: ")
+        print("Best Fitness = ", best_fit)
+        print("Average Fitness = ", average_fit)
+        # self.save_stats(0, best_fit, average_fit, stdv_mean, stats["evaluations"], best_fit_indiv)
         for i in range(0, self.generations):
-            print("Generation: ", i)
-            print("Best Fitness = ", best_fit)
-            print("Average Fitness = ", average_fit)
             parents = self.parent_tournament(population)
             children = self.crossover(parents)
             stats["evaluations"] += self.off_size
             population = self.selection(population, children)
             best_fit = population[0].fitness
+            best_fit_indiv = population[0]
             average_fit = np.mean([x.fitness for x in population])
+            stdv_mean = np.std([x.fitness for x in population])
+            # self.save_stats(i, best_fit, average_fit, stdv_mean, stats["evaluations"], best_fit_indiv)
+            if best_fit > overall_best:
+                overall_best = best_fit
+                stats["best_gen"] = i
             stats["best_fitness"] = best_fit
             stats["mean_fitness"] = average_fit
             stats["best_fitness_it"].append(best_fit)
             stats["mean_fitness_it"].append(average_fit)
-            rounded_best = round(best_fit,6)
-            rounded_avg = round(average_fit, 6)
+            rounded_best = round(best_fit,10)
+            rounded_avg = np.round(average_fit, 10)
+            average_fit = average_fit.item()
             stats["generations"] = i
-            if best_fit == 0.99999 or rounded_best == rounded_avg:
+            print("Generation: ", i)
+            print("Best Fitness = ", best_fit)
+            print("Average Fitness = ", average_fit)
+            if math.isclose(rounded_best, 1.0):
                 break
-        # population[0].play_melody(self.chord_prog)
-        # phenotype = genotype_translation(population[0].melody)
-        # print(phenotype)
-        # for i in phenotype:
-        #     print(i[0], end=",")
         best_indiv = population[0]
-        best_indiv.save_melody(self.chord_prog, self.filename)
+        # best_indiv.save_melody(self.chord_prog, self.filename)
         # best_indiv.play_melody(self.chord_prog)
-        # print("Best Individual Objective Values")
-        # print("O1: ", best_indiv.o1)
-        # print("O2: ", best_indiv.o2)
-        # print("O3: ", best_indiv.o3)
-        # print("O4: ", best_indiv.o4)
-        # print("O5: ", best_indiv.o5)
-        # print("O6: ", best_indiv.o6)
-        # print("O7: ", best_indiv.o7)
-        # print("O8: ", best_indiv.o8)
-        # print("O9: ", best_indiv.o9)
-        # print("O10: ", best_indiv.o10)
-        # print("O11: ", best_indiv.o11)
         return stats
 
+    def save_stats(self, iteration, best, mean, stdv, evaluations, indiv):
+        FILEPATH = "./test_results/evolution_C-G-Am-F-2.csv"
+        res = [iteration, best, mean, stdv, evaluations]
+        indiv.save_melody(self.chord_prog, "melody_evolution_C-G-Am-F-2/" + "gen_" + str(iteration))
+        with open(FILEPATH, 'a', newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(res)
 
-# for i in range(1):
-#     ga1 = GeneticAlgorithm(filename="examples/example" + str(i))
-#     results = ga1.run_genetic_algorithm()
+
+
+# ga1 = GeneticAlgorithm()
+# results = ga1.run_genetic_algorithm()
 
 
 
 
-# for i in range(0,len(parent)):
-#     print("Parent")
-#     print(parent[i].melody)
-#     print(parent[i].fitness)
-#     print("Child")
-#     print(child[i].melody)
-#     print(child[i].fitness)
 
-# 0.8157603686635945
-# 0.8157603686635947
